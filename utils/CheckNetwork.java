@@ -1,8 +1,14 @@
-package com.example.myblank;
+package com.fta.httpframework;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 /**
  * 文件描述： 用于判断是不是联网状态
@@ -42,6 +48,29 @@ public class CheckNetwork {
             return false;
         }
 
+    }
+
+    /**
+     * 获取本机的ip地址
+     * @return
+     */
+    public static String getLocalhost() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && (inetAddress instanceof Inet4Address)) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }
